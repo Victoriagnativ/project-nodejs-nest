@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+
+import {
+  CreateUserDto,
+  SignInDto,
+  SingUpDto,
+} from '../user/dto/create-user.dto';
+import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @ApiResponse({ status: HttpStatus.CREATED, type: CreateUserDto })
+  @ApiOkResponse({ type: SingUpDto })
+  @Post('/register')
+  createUser(@Body() body: CreateUserDto) {
+    return this.authService.singUpUser(body);
   }
-
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('/login')
+  async signInUser(@Body() signInDto: SignInDto) {
+    return this.authService.signInUser(signInDto);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @UseGuards(AuthGuard())
+  @Post('logout')
+  async logoutUser(@Req() req: any) {
+    const userId = req.user.userId;
+    return this.authService.logoutUser(userId);
   }
 }

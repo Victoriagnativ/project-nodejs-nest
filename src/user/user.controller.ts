@@ -1,34 +1,71 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  NotFoundException,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import {
+  UserFilterDto,
+  UserItemDto,
+} from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { BaseQueryDto } from '../common/validator/base.query.validator';
+import {
+  ApiPaginatedResponse,
+  PaginatedDto,
+} from '../common/interface/responce.interface';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiTags('User')
+@ApiExtraModels(UserItemDto, PaginatedDto)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  // @ApiResponse({ status: HttpStatus.CREATED, type: CreateUserDto })
+  // @Post('/create')
+  // createUser(@Body() createUserDto: CreateUserDto) {
+  //   return this.userService.createUser(createUserDto);
+  // }
+  @UseGuards(AuthGuard())
+  @ApiPaginatedResponse('entities', UserItemDto)
+  @Get('/list')
+  findAllUsers(@Query() query: BaseQueryDto) {
+    return this.userService.findAllUsers(query);
   }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @UseGuards(AuthGuard())
+  @Get(':idOrEmail')
+  async getUser(@Param('idOrEmail') idOrEmail: string) {
+    const user = await this.userService.findOneUser(idOrEmail);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @UseGuards(AuthGuard())
+  @Get('')
+  filterUsers(@Query() query: UserFilterDto) {
+    console.log(query);
+    return this.userService.filterUsers(query);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(AuthGuard())
+  @Patch('/update')
+  updateUser(@Request() req: any, @Body() data: UpdateUserDto) {
+    console.log('User from req:', req.user);
+    return this.userService.updateUser(req.user.id, data);
   }
-
+  @UseGuards(AuthGuard())
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
   }
 }
