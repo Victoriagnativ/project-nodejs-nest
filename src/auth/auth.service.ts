@@ -41,7 +41,7 @@ export class AuthService {
       console.error('Error hashing password:', error);
     }
   }
-  async validateUser(userId: string, userEmail: string): Promise<any> {
+  async validateUser(userId: string, userEmail: string): Promise<User> {
     if (!userId || !userEmail) {
       throw new UnauthorizedException();
     }

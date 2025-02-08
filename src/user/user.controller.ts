@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -31,11 +30,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @ApiResponse({ status: HttpStatus.CREATED, type: CreateUserDto })
-  // @Post('/create')
-  // createUser(@Body() createUserDto: CreateUserDto) {
-  //   return this.userService.createUser(createUserDto);
-  // }
   @UseGuards(AuthGuard())
   @ApiPaginatedResponse('entities', UserItemDto)
   @Get('/list')

@@ -5,6 +5,7 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -13,7 +14,7 @@ import { BaseQueryDto } from '../../common/validator/base.query.validator';
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({}, { message: 'Некоректний формат email' })
   @ApiProperty({ required: true })
   email: string;
   @IsOptional()
@@ -26,6 +27,10 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8, { message: 'Пароль має бути не менше 8 символів' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/, {
+    message:
+      'Пароль має містити хоча б одну велику літеру, одну малу літеру, одну цифру та один спеціальний символ',
+  })
   @ApiProperty({ required: true })
   password: string;
   @IsNumberString()

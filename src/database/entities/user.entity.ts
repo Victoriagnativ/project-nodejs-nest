@@ -18,6 +18,8 @@ export class User extends BaseEntity {
   isActive: boolean;
   @Column('integer', { nullable: true })
   age: number;
+  @Column({ nullable: true })
+  phone: string;
   @OneToMany(() => Post, (entity) => entity.user)
   posts?: Post[];
 }

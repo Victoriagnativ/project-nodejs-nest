@@ -40,7 +40,7 @@ export class PostController {
   @UseGuards(AuthGuard())
   @Delete(':postId')
   async deletePost(@Request() req: any, @Param('postId') postId: string) {
-    console.log('User from req:', req.user); // Лог для перевірки
+    console.log('User from req:', req.user);
     return this.postService.deletePost(req.user, postId);
   }
 }

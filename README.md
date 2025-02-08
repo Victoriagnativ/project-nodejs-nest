@@ -1,3 +1,58 @@
+## RUN DEVELOPMENT VERSION
+# Клонування проєкту:
+https://github.com/Victoriagnativ/project-nodejs-nest.git
+# Встановлення та запуск
+# Необхідні залежності:
+1. install node v22.11.0
+2. Postgres 12
+3. Redis (для керування сесіями)
+4. ESLint (для перевірки коду)
+5. Swagger
+
+# Встановлення всіх залежностей
+npm install
+# Перейти за лінком на swagger:
+http://localhost:3003/api/doc#/
+
+# API Documentation
+
+## Використання Postman для тестування API
+
+# Для тестування API використовувався [Postman](https://www.postman.com/),
+# що дозволяє надсилати HTTP запити до серверу та перевіряти відповіді. 
+# Ось основні операції, які були протестовані:
+
+
+# Налаштування змінних оточення
+# Створіть .env файл у корені проєкту та заповніть його:
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=nestjs
+DATABASE_PORT=5432
+DATABASE_HOST=localhost
+PORT=3003
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>

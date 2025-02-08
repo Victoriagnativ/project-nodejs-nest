@@ -17,16 +17,6 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  // private userList = [];
-  // createUser(createUserDto: CreateUserDto) {
-  //   const index = new Date().valueOf();
-  //   this.userList.push({
-  //     ...createUserDto,
-  //     id: index,
-  //   });
-  //   return this.userList[0];
-  // }
-
   async findAllUsers(query?: BaseQueryDto): Promise<any> {
     const options = {
       page: +query?.page || 1,
@@ -79,6 +69,8 @@ export class UserService {
       if (value) {
         if (key === 'order' || key === 'sortBy') {
           order[key] = value.toUpperCase();
+        } else if (key === 'age') {
+          filters[key] = +value;
         } else {
           filters[key] = `%${value}%`;
         }
@@ -94,9 +86,15 @@ export class UserService {
         .leftJoinAndSelect('user.posts', 'post');
 
       Object.keys(filters).forEach((key) => {
-        queryBuilder.andWhere(`user.${key} LIKE :${key}`, {
-          [key]: filters[key],
-        });
+        if (key === 'age') {
+          queryBuilder.andWhere(`user.${key} = :${key}`, {
+            [key]: filters[key],
+          });
+        } else {
+          queryBuilder.andWhere(`user.${key} LIKE :${key}`, {
+            [key]: filters[key],
+          });
+        }
       });
 
       if (order.sortBy) {

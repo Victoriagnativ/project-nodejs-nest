@@ -18,7 +18,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: postgresConfig.database,
       entities: [User, Post],
       // migrations
-      synchronize:false,
+      synchronize: false,
     };
   }
 }
